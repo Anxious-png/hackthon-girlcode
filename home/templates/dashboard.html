@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row g-3">
+
+    <!-- Card 1: Welcome + stats + navigation -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-4">
+        <h4>🔐 Silent Guard</h4>
+        <p>Welcome, {{ user.username }}!</p>
+        <p class="text-success">✔️ You're Protected</p>
+        <p class="text-warning">⚠️ {{ suspicious_count }} suspicious messages</p>
+
+        <p><strong>Fraudulent SMS:</strong><br>from +256 77xxxxxxx</p>
+
+        <a href="{% url 'scan_message' %}" class="btn btn-outline-primary w-100 mb-2">🔍 Scan Message</a>
+        <a href="{% url 'report_fraud' %}" class="btn btn-outline-danger w-100 mb-2">🚨 Report Fraud</a>
+        <a href="{% url 'learn' %}" class="btn btn-outline-secondary w-100">📘 Learn About Scams</a>
+      </div>
+    </div>
+
+    <!-- Card 2: Scan Message form + results -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-4">
+        <h4>🔍 Scan Message</h4>
+        <form method="post" action="{% url 'scan_message' %}">
+          {% csrf_token %}
+          <textarea name="message_text" class="form-control mb-3" rows="3" placeholder="Paste text message here..." required ></textarea>
+          <button type="submit" class="btn btn-primary w-100">Scan Now</button>
+        </form>
+
+        {% if scan_result %}
+          {% if scan_result.is_scam %}
+            <div class="alert alert-danger mt-3">
+              ⚠️ <strong>SCAM DETECTED</strong><br>
+              Fake keywords + reported number ({{ scan_result.report_count }} times)
+            </div>
+            <a href="{% url 'report_fraud' %}" class="btn btn-warning w-100 mt-2">Report This</a>
+          {% else %}
+            <div class="alert alert-success mt-3">✅ Message appears safe.</div>
+          {% endif %}
+        {% endif %}
+
+        <a href="{% url 'learn' %}" class="btn btn-outline-secondary w-100 mt-2">Learn More</a>
+      </div>
+    </div>
+
+    <!-- Card 3: Withdrawal Check -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-4">
+        <h4>💵 Withdrawal Check</h4>
+        <form method="post" action="{% url 'check_transaction' %}">
+          {% csrf_token %}
+          <input type="text" name="receiver_number" class="form-control mb-2" placeholder="Receiver number (+256...)" required>
+          <input type="number" name="amount" class="form-control mb-3" placeholder="Amount (UGX)" required>
+          <button type="submit" class="btn btn-danger w-100 mb-3">Check Risk Level</button>
+        </form>
+
+        {% if withdrawal_risk %}
+          <div class="alert alert-danger">
+            ⚠️ <strong>Risk Detected</strong><br>
+            - Reported number ({{ withdrawal_risk.report_count }} times)<br>
+            - Odd transaction time
+          </div>
+          <a href="#" class="btn btn-success w-100 mt-2">Proceed Anyway</a>
+          <a href="#" class="btn btn-outline-danger w-100 mt-2">Cancel</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Card 4: Alert -->
+    <div class="col-md-3">
+      <div class="card shadow-sm p-4">
+        <h4>🚨 ALERT</h4>
+        <p>We've detected <strong>{{ alert.failed_pin_attempts }}</strong> failed PIN attempts on your account.</p>
+        <p><strong>Time:</strong> {{ alert.timestamp|date:"Y-m-d H:i:s" }}</p>
+        <p><strong>Location:</strong> {{ alert.location }}</p>
+
+        <button class="btn btn-dark w-100 mb-2">Lock Account</button>
+        <button class="btn btn-light w-100">This Was Me</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

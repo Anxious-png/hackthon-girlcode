@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4">
+    <h2>🚨 Report Fraud</h2>
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Scammer Number:</label>
+            <input type="text" name="scammer_number" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Message:</label>
+            <textarea name="message" class="form-control" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label>Reason:</label>
+            <textarea name="report_reason" class="form-control"></textarea>
+        </div>
+        <button class="btn btn-danger">Submit Report</button>
+    </form>
+</div>
+{% endblock %}

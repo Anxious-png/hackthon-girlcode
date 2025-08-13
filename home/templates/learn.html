@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📘 Educational Content</h2>
+    {% for content in contents %}
+        <div class="card p-3 shadow-sm mb-3">
+            <h4>{{ content.title }}</h4>
+            <p>{{ content.content }}</p>
+            <small>Language: {{ content.language }}</small>
+        </div>
+    {% empty %}
+        <p>No educational content yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

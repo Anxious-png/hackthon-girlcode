@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Transaction Check Result</h2>
+    {% if flagged %}
+        <div class="alert alert-danger">⚠️ Risk Detected - {{ reason }}</div>
+    {% else %}
+        <div class="alert alert-success">✅ Safe Transaction</div>
+    {% endif %}
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

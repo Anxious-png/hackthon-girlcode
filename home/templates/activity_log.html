@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📜 Suspicious Activity Log</h2>
+    {% for log in logs %}
+        <div class="card p-3 shadow-sm mb-3">
+            <p><strong>Event:</strong> {{ log.event_type }}</p>
+            <p><strong>Location:</strong> {{ log.location }}</p>
+            <p><strong>Time:</strong> {{ log.timestamp }}</p>
+            <p><strong>Notes:</strong> {{ log.notes }}</p>
+        </div>
+    {% empty %}
+        <p>No suspicious activity found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

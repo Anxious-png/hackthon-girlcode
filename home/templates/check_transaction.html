@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>💸 Check Transaction</h2>
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Receiver Number:</label>
+            <input type="text" name="receiver_number" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Amount (UGX):</label>
+            <input type="number" name="amount" class="form-control" required>
+        </div>
+        <button class="btn btn-warning">Check Risk Level</button>
+    </form>
+</div>
+{% endblock %}

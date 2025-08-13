@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4">
+    <h2>🔍 Scan Message</h2>
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Paste Text Message Here:</label>
+            <textarea name="message_text" class="form-control" rows="4" required></textarea>
+        </div>
+        <button class="btn btn-primary">Scan Now</button>
+
+{% if msg.id %}
+  <a href="{% url 'scan_result' msg.id %}">See result</a>
+{% else %}
+  No result yet
+{% endif %}
+
+
+
+    </form>
+</div>
+{% endblock %}
