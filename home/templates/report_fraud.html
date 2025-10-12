@@ -1,23 +1,267 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% block title %}Report Fraud{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <h2>🚨 Report Fraud</h2>
-    <form method="post" class="card p-4 shadow-sm">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label>Scammer Number:</label>
-            <input type="text" name="scammer_number" class="form-control" required>
+<style>
+    body {
+        background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .report-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(12px);
+        border: 2px solid #8B0000;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%) !important;
+        color: white !important;
+        text-align: center;
+        padding: 30px 25px !important;
+        border-radius: 18px 18px 0 0 !important;
+        margin: -1px -1px 0 -1px;
+        border: none;
+    }
+
+    .brand-logo {
+        width: 100px;
+        height: 45px;
+        background: white;
+        margin: 0 auto 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+        color: #8B0000;
+        letter-spacing: 2px;
+    }
+
+    .card-header h3 {
+        margin-bottom: 0;
+        font-weight: 700;
+        font-size: 26px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .alert-icon {
+        font-size: 22px;
+        margin-right: 8px;
+    }
+
+    .card-body {
+        padding: 40px 35px !important;
+    }
+
+    .form-label {
+        color: #1a1a1a;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        padding: 14px 16px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background-color: white !important;
+        color: #1a1a1a;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #DC143C;
+        box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        background-color: white !important;
+    }
+
+    .form-control::placeholder {
+        color: #999;
+        opacity: 1;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        width: 100%;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+    }
+
+    .btn-danger:active {
+        transform: translateY(0);
+    }
+
+    .card-footer {
+        text-align: center;
+        padding: 20px 30px !important;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+        border-top: 2px solid #e0e0e0;
+        border-radius: 0 0 18px 18px !important;
+    }
+
+    .card-footer p {
+        color: #666;
+        font-size: 13px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .warning-icon {
+        color: #ffc107;
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    .info-box p {
+        color: #1a1a1a;
+        font-size: 13px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .info-icon {
+        color: #ff9800;
+        font-size: 16px;
+        margin-right: 5px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 30px 25px !important;
+        }
+
+        .card-header {
+            padding: 25px 20px !important;
+        }
+
+        .card-header h3 {
+            font-size: 22px;
+        }
+
+        .brand-logo {
+            width: 90px;
+            height: 40px;
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .report-wrapper {
+            padding: 20px 15px;
+        }
+
+        .card-body {
+            padding: 25px 20px !important;
+        }
+
+        .card-header h3 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="report-wrapper">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow-lg border-0 rounded-4 glass-card">
+                    <div class="card-header bg-danger text-white text-center rounded-top-4">
+                        <div class="brand-logo">SILENT GUARD</div>
+                        <h3 class="mb-0"><span class="alert-icon">🚨</span> Report Fraud</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="info-box">
+                            <p><span class="info-icon">💡</span> Your report helps protect the community from scammers</p>
+                        </div>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">📱 Scammer Number</label>
+                                <input type="text" name="scammer_number" class="form-control" placeholder="+256 7XXXXXXXX" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">💬 Message</label>
+                                <textarea name="message" class="form-control" rows="3" placeholder="Paste the scam message here..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">📝 Reason</label>
+                                <textarea name="report_reason" class="form-control" rows="2" placeholder="Explain why you think this is fraud (optional)..."></textarea>
+                            </div>
+                            <button class="btn btn-danger w-100 py-2 fw-bold">
+                                🚨 Submit Report
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center text-muted">
+                        <p><span class="warning-icon">⚠</span> Reports help us build a safer community</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label>Message:</label>
-            <textarea name="message" class="form-control" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label>Reason:</label>
-            <textarea name="report_reason" class="form-control"></textarea>
-        </div>
-        <button class="btn btn-danger">Submit Report</button>
-    </form>
+    </div>
 </div>
 {% endblock %}

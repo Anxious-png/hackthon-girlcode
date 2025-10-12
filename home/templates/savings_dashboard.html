@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dashboard-wrapper {
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid #8B0000;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
+    }
+
+    .card-header-section {
+        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        padding: 30px;
+        text-align: center;
+        border-radius: 18px 18px 0 0;
+        margin: -1px -1px 0 -1px;
+    }
+
+    .card-header-section h3 {
+        color: white;
+        font-weight: 700;
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .account-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 14px;
+        margin-top: 5px;
+        backdrop-filter: blur(10px);
+    }
+
+    .card-body-section {
+        padding: 40px;
+    }
+
+    .goal-details {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .goal-details h5 {
+        color: #1a1a1a;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .amount-display {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .amount-box {
+        flex: 1;
+        min-width: 200px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .amount-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(139, 0, 0, 0.2);
+        border-color: #8B0000;
+    }
+
+    .amount-box label {
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .amount-box p {
+        color: #1a1a1a;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .progress {
+        height: 30px;
+        border-radius: 15px;
+        background: #e9ecef;
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #8B0000 0%, #DC143C 100%);
+        border-radius: 15px;
+        font-weight: 700;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: width 0.6s ease;
+        box-shadow: 0 2px 8px rgba(139, 0, 0, 0.3);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 30px;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 30px;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 20px;
+        font-size: 15px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        color: #1a1a1a;
+        border-left: 4px solid #2196f3;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+        color: #1a1a1a;
+        border-left: 4px solid #ffc107;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    /* 🎉 Investment suggestion styles */
+    .investment-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .investment-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .investment-card .card-body h5 {
+        font-weight: 700;
+        color: #8B0000;
+    }
+
+    .investment-card .card-footer {
+        background: transparent;
+        border-top: none;
+    }
+
+    @media (max-width: 768px) {
+        .card-body-section {
+            padding: 30px 20px;
+        }
+        .amount-display { flex-direction: column; }
+    }
+</style>
+     Account No: <strong>{{ user.account_number }}</strong>
+<div class="dashboard-wrapper">
+    <div class="container mt-5 text-center">
+        <div class="card glass-card shadow-lg p-4">
+            <div class="card-header-section">
+                <h3>🏦 Savings Goal Tracker</h3>
+                <div class="account-badge">
+                    Saving  Account No: <strong>7890876545</strong>
+                </div>
+            </div>
+
+            <div class="card-body-section">
+                {% if goal %}
+                    <div class="goal-details">
+                        <h5>{{ goal.goal_name }}</h5>
+                    </div>
+
+                    <div class="amount-display">
+                        <div class="amount-box">
+                            <label>Goal Amount</label>
+                            <p>UGX {{ goal.goal_amount|floatformat:0 }}</p>
+                        </div>
+                        <div class="amount-box">
+                            <label>Amount saved</label>
+                            <p>UGX {{ goal.current_savings|floatformat:0 }}</p>
+                        </div>
+                    </div>
+
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped bg-success"
+                             role="progressbar"
+                             style="width: {{ goal.progress_percent }}%"
+                             aria-valuenow="{{ goal.progress_percent }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ goal.progress_percent }}%
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="{% url 'deposit_money' %}" class="btn btn-success mb-2">Deposit Money</a>
+                        <a href="{% url 'add_savings' %}" class="btn btn-primary">Add Savings</a>
+                    </div>
+
+                    <div class="alert alert-info mt-3 shadow-sm">
+                         <strong>Smart Insight:</strong> {{ ai_feedback }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning mt-3">
+                        No savings goal set yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        
+        {% if goal and goal.progress_percent >= 50 %}
+        <div class="card shadow-lg p-4 mt-5">
+            <h4 class="text-success mb-3">🎉 Congratulations!</h4>
+            <p>You’ve achieved your saving goal! Here are ways to grow your wealth:</p>
+
+            <div class="row mt-4">
+                {% for item in investment_suggestions %}
+                <div class="col-md-4 mb-4">
+                    <div class="card investment-card shadow-sm h-100">
+                        {% if item.image_url %}
+                        <img src="{{ item.image_url }}" class="card-img-top" style="height:180px; object-fit:cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5>{{ item.name }}</h5>
+                            <p class="text-muted small">{{ item.description|truncatewords:15 }}</p>
+                            <p><strong>Return:</strong> {{ item.return_rate }}% per year</p>
+                            <p><strong>Minimum:</strong> UGX {{ item.min_amount }}</p>
+                            <p><strong>Risk:</strong> {{ item.risk_level }}</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .deposit-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        border: 2px solid #8B0000;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        padding: 35px 30px;
+        text-align: center;
+        margin: -1px -1px 0 -1px;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .card-header-custom h3 {
+        color: white;
+        font-weight: 700;
+        font-size: 28px;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .balance-display {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 15px 25px;
+        margin-top: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .balance-display p {
+        color: white;
+        margin: 0;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .balance-display strong {
+        font-size: 24px;
+        font-weight: 700;
+        display: block;
+        margin-top: 8px;
+        letter-spacing: 1px;
+    }
+
+    .card-body-custom {
+        padding: 40px 35px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .form-group label {
+        color: #1a1a1a;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        background: white;
+        color: #1a1a1a;
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        padding: 14px 16px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #8B0000;
+        box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+        background: white;
+    }
+
+    .form-control::placeholder {
+        color: #999;
+        opacity: 1;
+    }
+
+    .form-text,
+    small {
+        color: #666;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        width: 100%;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        margin-top: 30px;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-success:active {
+        transform: translateY(0);
+    }
+
+    .deposit-icon {
+        font-size: 20px;
+        margin-right: 8px;
+    }
+
+    /* Alert styling */
+    .alert {
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    /* Invalid feedback */
+    .invalid-feedback,
+    .error {
+        color: #DC143C;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    /* Select dropdown styling */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+        cursor: pointer;
+    }
+
+    /* Security note */
+    .security-note {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .security-note p {
+        color: #999;
+        font-size: 12px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .lock-icon {
+        font-size: 16px;
+        color: #28a745;
+    }
+
+    /* Responsive design */
+    @media (max-width: 576px) {
+        .card-header-custom {
+            padding: 30px 25px;
+        }
+
+        .card-header-custom h3 {
+            font-size: 24px;
+        }
+
+        .card-body-custom {
+            padding: 30px 25px;
+        }
+
+        .balance-display strong {
+            font-size: 20px;
+        }
+
+        .deposit-wrapper {
+            padding: 20px 15px;
+        }
+    }
+</style>
+
+<div class="deposit-wrapper">
+    <div class="container mt-5 text-center">
+        <div class="card p-4 shadow-lg">
+            <div class="card-header-custom">
+                <h3><span class="deposit-icon">💰</span> Deposit Money</h3>
+                <div class="balance-display">
+                    <p>Your current balance:</p>
+                    <strong>UGX {{ account.balance }}</strong>
+                </div>
+            </div>
+
+            <div class="card-body-custom">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button class="btn btn-success w-100 mt-3">Deposit</button>
+                </form>
+
+                <div class="security-note">
+                    <p><span class="lock-icon">🔒</span> All transactions are secure and encrypted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

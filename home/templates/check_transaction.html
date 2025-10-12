@@ -1,18 +1,74 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Check Transaction{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2>💸 Check Transaction</h2>
-    <form method="post" class="card p-4 shadow-sm">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label>Receiver Number:</label>
-            <input type="text" name="receiver_number" class="form-control" required>
+<style>
+    /* Background gradient */
+    body {
+        background: linear-gradient(135deg, #f9f9f9, #e6f2ff);
+    }
+
+    /* Glass card style */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .glass-card h2 {
+        font-weight: bold;
+        color: #ff9800;
+    }
+
+    .btn-check {
+        background: linear-gradient(135deg, #ff9800, #ff5722);
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        font-weight: bold;
+        color: #fff;
+        transition: 0.3s;
+    }
+
+    .btn-check:hover {
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="glass-card col-md-6">
+        <h2 class="mb-4 text-center">💸 Check Transaction</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Receiver Number:</label>
+                <input type="text" name="receiver_number" class="form-control" placeholder="+256 7XXXXXXXX" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Amount (UGX):</label>
+                <input type="number" name="amount" class="form-control" placeholder="e.g. 50000" required>
+            </div>
+
+            <button class="btn btn-check w-100">Check Risk Level</button>
+        </form>
+
+        {% if flagged %}
+        <div class="alert alert-danger mt-4 shadow-sm">
+            ⚠️ <strong>Risk Detected!</strong><br>
+            Reason: {{ reason }}
         </div>
-        <div class="mb-3">
-            <label>Amount (UGX):</label>
-            <input type="number" name="amount" class="form-control" required>
+        {% elif flagged == False %}
+        <div class="alert alert-success mt-4 shadow-sm">
+            ✅ Transaction appears safe.
         </div>
-        <button class="btn btn-warning">Check Risk Level</button>
-    </form>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

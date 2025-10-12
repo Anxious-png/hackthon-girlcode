@@ -22,20 +22,35 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', views.login_view, name='login'),
+    path("logout/", views.logout_view, name="logout"),
     path('signup/', views.signup_view, name='signup'),
     path('dashboard/', views.dashboard, name='dashboard'),
 
     path('scan/', views.scan_message, name='scan_message'),
     path('scan/result/<int:msg_id>/', views.scan_result, name='scan_result'),
+    path("lock-account/", views.lock_account, name="lock_account"),
+    path("confirm-login/", views.confirm_login, name="confirm_login"),
 
     path('report/', views.report_fraud, name='report_fraud'),
     path('check/', views.check_transaction, name='check_transaction'),
+    path('set-goal/', views.set_saving_goal, name='set_savings_goal'),
+    path('savings-dashboard/', views.savings_dashboard, name='savings_dashboard'),
+    path('transfer-to-savings/', views.transfer_to_savings, name='transfer_to_savings'),
+
 
     path('learn/', views.learn, name='learn'),
     path('feedback/', views.submit_feedback, name='submit_feedback'),
     path('activity/', views.activity_log, name='activity_log'),
     path('receive-sms/', views.receive_sms, name='receive_sms'),
     path('incoming-sms/', views.incoming_sms, name='incoming_sms'),
+
+    path("deposit/", views.deposit_money, name="deposit_money"),
+    path("add-savings/", views.add_savings, name="add_savings"),
+    path("savings-dashboard/", views.savings_dashboard, name="savings_dashboard"),
+    path("withdraw/", views.withdraw_money, name="withdraw_money"),
+    
+    path("investments/", views.invest, name="investment_options"),
+    path("transaction-history/", views.transaction_history, name="transaction_history"),
 ]
 
 

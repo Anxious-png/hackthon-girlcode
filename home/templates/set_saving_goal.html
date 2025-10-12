@@ -1,17 +1,15 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Scan Message{% endblock %}
+{% block title %}Set Saving Goal{% endblock %}
 {% block content %}
 <style>
-    /* Full-page background */
     body {
         background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
         min-height: 100vh;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Center container */
-    .scan-container {
+    .goal-container {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -19,25 +17,20 @@
         padding: 40px 20px;
     }
 
-    /* Glass effect card */
-    .glass-card {
+    .goal-card {
         background: rgba(255, 255, 255, 0.98);
         border-radius: 20px;
         padding: 50px 40px;
         width: 100%;
-        max-width: 520px;
-        color: #1a1a1a;
-        text-align: center;
+        max-width: 500px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         border: 2px solid #8B0000;
-        animation: fadeIn 0.8s ease-in-out;
+        color: #1a1a1a;
         position: relative;
         overflow: hidden;
     }
 
-    .glass-card::before {
+    .goal-card::before {
         content: '';
         position: absolute;
         top: 0;
@@ -45,11 +38,6 @@
         right: 0;
         height: 6px;
         background: linear-gradient(90deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
     }
 
     .brand-header {
@@ -72,14 +60,15 @@
         letter-spacing: 2px;
     }
 
-    h2 {
+    .goal-card h3 {
         font-weight: 700;
         margin-bottom: 10px;
         color: #1a1a1a;
         font-size: 28px;
+        text-align: center;
     }
 
-    .scan-icon {
+    .goal-icon {
         font-size: 24px;
         margin-right: 8px;
     }
@@ -87,101 +76,118 @@
     .subtitle {
         color: #666;
         font-size: 14px;
+        text-align: center;
         margin-bottom: 30px;
     }
 
-    .form-label {
+    .goal-card .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .goal-card label {
         color: #1a1a1a;
         font-weight: 600;
         font-size: 14px;
         margin-bottom: 8px;
         display: block;
-        text-align: left;
     }
 
-    textarea {
-        border-radius: 10px;
-        border: 2px solid #e0e0e0;
-        resize: none;
+    .goal-card input[type="text"],
+    .goal-card input[type="number"],
+    .goal-card input[type="date"],
+    .goal-card select,
+    .goal-card textarea {
+        width: 100%;
         padding: 14px 16px;
-        color: #1a1a1a;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
         font-size: 15px;
         transition: all 0.3s ease;
-        width: 100%;
         background: white;
+        color: #1a1a1a;
     }
 
-    textarea:focus {
+    .goal-card input[type="text"]:focus,
+    .goal-card input[type="number"]:focus,
+    .goal-card input[type="date"]:focus,
+    .goal-card select:focus,
+    .goal-card textarea:focus {
         outline: none;
         border-color: #8B0000;
         box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
     }
 
-    textarea::placeholder {
-        color: #999;
-        opacity: 1;
-    }
-
-    .btn-custom {
-        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 15px;
-        width: 100%;
-        font-weight: 700;
-        font-size: 16px;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
-        margin-top: 20px;
+    .goal-card select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
         cursor: pointer;
     }
 
+    .goal-card textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .goal-card .form-text,
+    .goal-card small {
+        color: #666;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .btn-custom {
+        background: linear-gradient(135deg, #bd2409 0%, #b2270f 100%);
+        border: none;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        width: 100%;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        margin-top: 30px;
+    }
+
     .btn-custom:hover {
-        background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
-        opacity: 0.9;
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
     }
 
     .btn-custom:active {
         transform: translateY(0);
     }
 
-    .alert {
-        margin-top: 20px;
-        border-radius: 12px;
-        border: none;
-        padding: 15px;
-        font-size: 14px;
-        font-weight: 600;
+    .dashboard-link {
+        margin-top: 25px;
+        text-align: center;
     }
 
-    .result-link {
-        margin-top: 20px;
-        display: inline-block;
+    .dashboard-link p {
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .dashboard-link a {
         color: #8B0000;
         text-decoration: none;
         font-weight: 600;
-        font-size: 14px;
         transition: color 0.3s ease;
-        padding: 10px 20px;
-        background: rgba(139, 0, 0, 0.1);
-        border-radius: 10px;
     }
 
-    .result-link:hover {
+    .dashboard-link a:hover {
         color: #DC143C;
         text-decoration: none;
-        background: rgba(139, 0, 0, 0.15);
-    }
-
-    .no-result-text {
-        color: #666;
-        margin-top: 20px;
-        font-size: 14px;
     }
 
     .security-badge {
@@ -201,18 +207,34 @@
         gap: 5px;
     }
 
-    .shield-icon {
+    .lock-icon {
         font-size: 16px;
-        color: #8B0000;
+        color: #28a745;
+    }
+
+    /* Alert styling */
+    .alert {
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    /* Invalid feedback */
+    .invalid-feedback,
+    .error {
+        color: #DC143C;
+        font-size: 13px;
+        margin-top: 5px;
     }
 
     /* Responsive design */
     @media (max-width: 576px) {
-        .glass-card {
+        .goal-card {
             padding: 40px 30px;
         }
 
-        h2 {
+        .goal-card h3 {
             font-size: 24px;
         }
 
@@ -222,36 +244,32 @@
             font-size: 20px;
         }
 
-        .scan-container {
-            padding: 20px 15px;
+        .goal-container {
+            padding: 30px 15px;
         }
     }
 </style>
 
-<div class="scan-container">
-    <div class="glass-card">
+<div class="goal-container">
+    <div class="goal-card text-center">
         <div class="brand-header">
             <div class="brand-logo">SILENT GUARD</div>
-            <h2><span class="scan-icon">🔍</span> Scan Message</h2>
-            <p class="subtitle"><b>Detect fraudulent messages and protect your account</b></p>
+            <h3 class="mb-3"><span class="goal-icon">🎯</span> Set Your Saving Goal</h3>
+            <p class="subtitle">Define your financial goals and start saving today</p>
         </div>
 
         <form method="post">
             {% csrf_token %}
-            <div class="mb-3 text-start">
-                <label class="form-label fw-bold">Paste Text Message Here:</label>
-                <textarea name="message_text" class="form-control" rows="4" required></textarea>
-            </div>
-            <button class="btn btn-custom">Scan Now</button>
-            {% if msg.id %}
-                <a href="{% url 'scan_result' msg.id %}" class="result-link">See result</a>
-            {% else %}
-                <p class="no-result-text"><b>No result yet.</b></p>
-            {% endif %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-custom w-100 mt-3">Save Goal</button>
         </form>
 
+        <div class="dashboard-link">
+            <p><a href="{% url 'savings_dashboard' %}">View Dashboard</a></p>
+        </div>
+
         <div class="security-badge">
-            <p><span class="shield-icon">🛡</span> Your messages are scanned securely</p>
+            <p><span class="lock-icon">🔒</span> Your goals are private and secure</p>
         </div>
     </div>
 </div>

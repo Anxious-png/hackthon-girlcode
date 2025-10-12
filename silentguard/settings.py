@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'home',  # Custom app for the home page
     'crispy_forms',
     'crispy_bootstrap5',
+     
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -129,3 +130,11 @@ AUTH_USER_MODEL = 'home.UserProfile'
 # Africa's Talking Config
 AFRICASTALKING_USERNAME = 'sandbox'
 AFRICASTALKING_API_KEY = 'your_api_key_here'
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "anxious882@gmail.com"   # your email
+EMAIL_HOST_PASSWORD = "abcd efgh ijkl mnop" # use Gmail App Password (not normal password!)
+DEFAULT_FROM_EMAIL = "Silent Guard <anxious882@gmail.com>"

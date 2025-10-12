@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Transfer to Savings{% endblock %}
+{% block content %}
+<style>
+    body {
+        background: url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d7?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+        background-size: cover;
+    }
+    .transfer-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+    }
+    .transfer-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 30px;
+        width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        backdrop-filter: blur(10px);
+        color: #fff;
+    }
+</style>
+
+<div class="transfer-container">
+    <div class="transfer-card text-center">
+        <h3>💰 Transfer to Savings</h3>
+        <p><strong>Account Balance:</strong> UGX {{ account.balance }}</p>
+        <p><strong>Goal:</strong> {{ goal.goal_name }} ({{ goal.progress_percent }}%)</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label>Enter Amount to Save:</label>
+                <input type="number" name="amount" class="form-control" placeholder="UGX" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Save Now</button>
+        </form>
+
+        <p class="mt-3"><a href="{% url 'savings_dashboard' %}" class="text-light">Back to Dashboard</a></p>
+    </div>
+</div>
+{% endblock %}

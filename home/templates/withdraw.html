@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .withdraw-wrapper {
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 2px solid #8B0000;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        max-width: 500px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .card-header-section {
+        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        padding: 30px;
+        text-align: center;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .card-header-section h3 {
+        color: white;
+        font-weight: 700;
+        font-size: 26px;
+        margin-bottom: 5px;
+    }
+
+    .account-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .card-body-section {
+        padding: 40px 30px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        border: 2px solid #ccc;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #8B0000;
+        box-shadow: 0 0 5px rgba(139, 0, 0, 0.3);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 30px;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+        text-transform: uppercase;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+    }
+
+    .alert {
+        margin-top: 20px;
+        border-radius: 10px;
+        font-size: 15px;
+        padding: 15px;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border-left: 5px solid #28a745;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border-left: 5px solid #dc3545;
+    }
+</style>
+
+<div class="withdraw-wrapper">
+    <div class="container mt-5">
+        <div class="card glass-card">
+            <div class="card-header-section">
+                <h3>💸 Withdraw Funds</h3>
+                <div class="account-badge">
+                    Account No: <strong>{{ user.account_number }}</strong>
+                </div>
+            </div>
+
+            <div class="card-body-section">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="amount">Withdrawal Amount (UGX):</label>
+                        <input type="number" name="amount" id="amount" class="form-control" placeholder="Enter amount" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reason">Reason (optional):</label>
+                        <input type="text" name="reason" id="reason" class="form-control" placeholder="E.g., rent, school fees">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Withdraw</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
