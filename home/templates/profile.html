@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Profile | Silent Guard{% endblock %}
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    :root {
+        --primary-red: #8B0000;
+        --secondary-red: #A52A2A;
+        --light-red: #DC143C;
+        --accent-gold: #FFD700;
+    }
+
+    body {
+        background: linear-gradient(135deg, #800000 0%, #5a0000 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .profile-container {
+        padding: 60px 0;
+        min-height: 100vh;
+    }
+
+    .profile-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 50px 40px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        border: none;
+        position: relative;
+        overflow: hidden;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary-red), var(--light-red), var(--accent-gold));
+    }
+
+    .avatar-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 25px;
+    }
+
+    .avatar-wrapper {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 5px solid transparent;
+        background: linear-gradient(white, white) padding-box,
+                    linear-gradient(135deg, var(--primary-red), var(--light-red), var(--accent-gold)) border-box;
+        padding: 5px;
+        box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .avatar-wrapper img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .profile-card h3 {
+        font-weight: 700;
+        color: var(--primary-red);
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2rem;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-subtitle {
+        text-align: center;
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .profile-subtitle i {
+        color: var(--primary-red);
+        font-size: 0.9rem;
+    }
+
+    .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+        margin: 30px 0;
+        border: none;
+    }
+
+    .info-section {
+        background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(139, 0, 0, 0.1);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 700;
+        color: var(--primary-red);
+        min-width: 100px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-label i {
+        font-size: 1.1rem;
+    }
+
+    .info-value {
+        color: #333;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .role-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
+    }
+
+    .btn-logout {
+        background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+        border: none;
+        border-radius: 12px;
+        padding: 15px 40px;
+        font-weight: 700;
+        color: #fff;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .btn-logout::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-logout:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-logout:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(139, 0, 0, 0.3);
+        color: #fff;
+    }
+
+    .btn-logout:active {
+        transform: translateY(-1px);
+    }
+
+    .btn-logout i {
+        margin-right: 8px;
+    }
+
+    .profile-footer {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .profile-footer small {
+        color: #999;
+        font-size: 0.85rem;
+    }
+
+    .profile-footer i {
+        color: var(--accent-gold);
+        margin-right: 5px;
+    }
+
+    /* Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .profile-card {
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-card {
+            padding: 30px 25px;
+            margin: 20px;
+        }
+
+        .profile-card h3 {
+            font-size: 1.6rem;
+        }
+
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .info-label {
+            min-width: auto;
+        }
+
+        .btn-logout {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="container">
+        <div class="profile-card">
+            <div class="avatar-container">
+                <div class="avatar-wrapper">
+                    <img src="{% static '\images\me.jpg' %}" alt="User Avatar">
+                </div>
+            </div>
+            
+            <h3>{{ user.username }}</h3>
+            
+            <p class="profile-subtitle">
+                <i class="fas fa-envelope"></i>
+                {{ user.email }}
+            </p>
+            
+            <p class="profile-subtitle">
+                <i class="fas fa-calendar-alt"></i>
+                Member since {{ user.date_joined|date:"F j, Y" }}
+            </p>
+
+            <hr class="divider">
+
+            <div class="info-section">
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fas fa-building"></i>
+                        Branch:
+                    </span>
+                    <span class="info-value">{{ user.userprofile.branch|default:"Entebbe" }}</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">
+                        <i class="fas fa-user-tag"></i>
+                        Role:
+                    </span>
+                    <span class="info-value">
+                        <span class="role-badge">
+                            {% if user.userprofile.is_manager %}
+                                <i class="fas fa-user-tie"></i> Manager
+                            {% elif user.userprofile.is_salesagent %}
+                                <i class="fas fa-headset"></i> Sales Agent
+                            {% elif user.userprofile.is_owner %}
+                                <i class="fas fa-crown"></i> Director
+                            {% else %}
+                                <i class="fas fa-user"></i> Member
+                            {% endif %}
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <a href="{% url 'logout' %}" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+
+            <div class="profile-footer">
+                <small>
+                    <i class="fas fa-shield-alt"></i>
+                    Your account is secure with Silent Guard
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base.html' %}
+{% block content %}
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Content</title>
@@ -13,7 +13,7 @@
             --light-red: #DC143C;
             --accent-gold: #FFD700;
             --bg-light: #f8f9fa;
-            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --bg-gradient: linear-gradient(135deg, #800000 0%, #5a0000 100%);
         }
 
         body {
@@ -41,21 +41,22 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
+            background: linear-gradient(90deg, var(--accent-gold), #fff);
             border-radius: 2px;
         }
 
         .section-header h2 {
-            color: var(--primary-red);
+            color: #fff;
             font-weight: 700;
             font-size: 2.5rem;
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .section-header .lead {
-            color: #555;
+            color: #f0f0f0;
             font-size: 1.1rem;
             max-width: 700px;
             margin: 0 auto;
@@ -66,7 +67,7 @@
             border: none;
             border-radius: 20px;
             background: #fff;
-            box-shadow: 0 10px 40px rgba(139, 0, 0, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             height: 100%;
             position: relative;
@@ -92,7 +93,7 @@
 
         .card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(139, 0, 0, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .card-body {
@@ -127,7 +128,7 @@
         }
 
         .card-text {
-            color: #555;
+            color: #444;
             line-height: 1.8;
             font-size: 1rem;
             flex-grow: 1;
@@ -175,17 +176,21 @@
         .pill {
             padding: 10px 25px;
             background: #fff;
-            border: 2px solid var(--primary-red);
+            border: 2px solid #fff;
             color: var(--primary-red);
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .pill:hover, .pill.active {
-            background: var(--primary-red);
-            color: #fff;
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
         }
 
         /* Responsive */
@@ -428,3 +433,5 @@
     </script>
 </body>
 </html>
+
+{% endblock %}

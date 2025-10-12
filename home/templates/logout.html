@@ -1,22 +1,269 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
 {% block title %}Logout{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card p-4 shadow-lg" style="backdrop-filter: blur(12px); background: rgba(255,255,255,0.1); border-radius: 15px;">
-            <h3 class="text-center mb-4">Confirm Logout</h3>
-            <p class="text-center text-light">
-                Are you sure you want to log out?
-            </p>
-            <form method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger w-100 mb-2">Logout</button>
-                <a href="{% url 'dashboard' %}" class="btn btn-secondary w-100">Cancel</a>
-            </form>
+<style>
+    :root {
+        --primary-red: #8B0000;
+        --secondary-red: #A52A2A;
+        --light-red: #DC143C;
+        --accent-gold: #FFD700;
+    }
+
+    body {
+        background: linear-gradient(135deg, #800000 0%, #5a0000 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .logout-container {
+        padding: 40px 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logout-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 50px 40px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        border: none;
+        position: relative;
+        overflow: hidden;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .logout-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary-red), var(--light-red), var(--accent-gold));
+    }
+
+    .logout-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        box-shadow: 0 8px 25px rgba(139, 0, 0, 0.2);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.2);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 10px 35px rgba(139, 0, 0, 0.3);
+        }
+    }
+
+    .logout-icon i {
+        color: #fff;
+        font-size: 35px;
+    }
+
+    .logout-card h3 {
+        font-weight: 700;
+        color: var(--primary-red);
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .logout-card p {
+        text-align: center;
+        color: #333;
+        font-size: 1.05rem;
+        margin-bottom: 35px;
+        line-height: 1.6;
+    }
+
+    .btn-logout {
+        background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-weight: 700;
+        color: #fff;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .btn-logout::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-logout:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-logout:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(139, 0, 0, 0.3);
+    }
+
+    .btn-logout:active {
+        transform: translateY(-1px);
+    }
+
+    .btn-logout i {
+        margin-right: 8px;
+    }
+
+    .btn-cancel {
+        background: #fff;
+        border: 2px solid var(--primary-red);
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-weight: 700;
+        color: var(--primary-red);
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.4s ease;
+        width: 100%;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-cancel:hover {
+        background: var(--primary-red);
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+    }
+
+    .btn-cancel i {
+        margin-right: 8px;
+    }
+
+    .warning-box {
+        background: linear-gradient(135deg, #fff5f5, #ffe8e8);
+        border-left: 4px solid var(--light-red);
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    .warning-box i {
+        color: var(--light-red);
+        margin-right: 10px;
+    }
+
+    .warning-box p {
+        margin: 0;
+        text-align: left;
+        font-size: 0.95rem;
+        color: #555;
+    }
+
+    /* Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .logout-card {
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .logout-card {
+            padding: 30px 25px;
+            margin: 20px;
+        }
+
+        .logout-card h3 {
+            font-size: 1.6rem;
+        }
+
+        .btn-logout, .btn-cancel {
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="logout-container">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="logout-card">
+                <div class="logout-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                
+                <h3>Confirm Logout</h3>
+                <p>Are you sure you want to log out of Silent Guard?</p>
+
+                <div class="warning-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>Note:</strong> You will need to log in again to access your account.</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Yes, Logout</span>
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn-cancel">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                    </a>
+                </form>
+
+                <div class="text-center mt-4">
+                    <small style="color: #999;">
+                        <i class="fas fa-shield-alt"></i> Your session will be securely terminated
+                    </small>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 {% endblock %}

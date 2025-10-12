@@ -37,6 +37,7 @@ urlpatterns = [
     path('savings-dashboard/', views.savings_dashboard, name='savings_dashboard'),
     path('transfer-to-savings/', views.transfer_to_savings, name='transfer_to_savings'),
 
+    path('profile/', views.profile_view, name='profile'),
 
     path('learn/', views.learn, name='learn'),
     path('feedback/', views.submit_feedback, name='submit_feedback'),
