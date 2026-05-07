@@ -11,6 +11,7 @@ db.sqlite3
 /media/
 /staticfiles/
 /static_collected/
+.env
 
 # Environment variables & secrets
 .env
