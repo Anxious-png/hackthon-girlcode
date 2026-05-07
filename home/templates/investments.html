@@ -1,310 +1,320 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% block title %}Investment Options | SilentGuard{% endblock %}
 {% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
     body {
         background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
+        min-height: 100vh;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        min-height: 100vh;
     }
+    .invest-wrapper { padding: 40px 0; min-height: 100vh; }
 
-    .investment-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 60px 20px;
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
     }
+    .page-header h2 {
+        color: white; font-weight: 700; font-size: 32px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .page-header p { color: rgba(255,255,255,0.85); font-size: 15px; }
 
-    .glass-card {
-        background: rgba(255, 255, 255, 0.98);
+    /* Balance bar */
+    .balance-bar {
+        background: rgba(255,255,255,0.15);
         backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 2px solid #8B0000;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        padding: 50px 40px;
-        width: 100%;
-        max-width: 520px;
-        color: #1a1a1a;
-        text-align: center;
+        border-radius: 14px;
+        padding: 18px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 35px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .balance-bar .label { color: rgba(255,255,255,0.8); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+    .balance-bar .amount { color: white; font-size: 24px; font-weight: 700; }
+    .balance-bar .account { color: rgba(255,255,255,0.7); font-size: 13px; }
+
+    /* Category filter */
+    .filter-pills {
+        display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; justify-content: center;
+    }
+    .filter-pill {
+        padding: 8px 20px; border-radius: 25px; font-size: 13px; font-weight: 600;
+        cursor: pointer; transition: all 0.3s; border: 2px solid rgba(255,255,255,0.4);
+        color: white; background: transparent;
+    }
+    .filter-pill:hover, .filter-pill.active {
+        background: white; color: #8B0000; border-color: white;
+    }
+
+    /* Investment card */
+    .inv-card {
+        background: white; border-radius: 18px; overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%; display: flex; flex-direction: column;
         position: relative;
-        overflow: hidden;
-        animation: fadeIn 0.8s ease-in-out;
     }
-
-    .glass-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 6px;
-        background: linear-gradient(90deg, #8B0000 0%, #DC143C 50%, #8B0000 100%);
+    .inv-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+        background: linear-gradient(90deg, #8B0000, #DC143C);
     }
+    .inv-card:hover { transform: translateY(-6px); box-shadow: 0 18px 45px rgba(0,0,0,0.4); }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .brand-header {
+    .inv-card-header {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 25px 20px 15px;
         text-align: center;
-        margin-bottom: 30px;
+    }
+    .inv-icon {
+        width: 60px; height: 60px; border-radius: 50%;
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 12px; font-size: 26px;
+    }
+    .inv-card-header h5 {
+        color: #8B0000; font-weight: 700; font-size: 17px; margin: 0;
+    }
+    .category-tag {
+        display: inline-block; background: rgba(139,0,0,0.1); color: #8B0000;
+        padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px;
     }
 
-    .brand-logo {
-        width: 140px;
-        height: 60px;
-        background: #8B0000;
-        margin: 0 auto 20px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 24px;
+    .inv-card-body { padding: 20px; flex: 1; }
+    .inv-card-body p { color: #555; font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+
+    .inv-stats {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;
+    }
+    .stat-item {
+        background: #f8f9fa; border-radius: 10px; padding: 12px; text-align: center;
+    }
+    .stat-item .stat-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+    .stat-item .stat-value { font-size: 16px; font-weight: 700; color: #1a1a1a; display: block; margin-top: 3px; }
+    .stat-item .stat-value.green { color: #28a745; }
+    .stat-item .stat-value.red { color: #DC143C; }
+    .stat-item .stat-value.orange { color: #ff9800; }
+
+    .risk-badge {
+        display: inline-block; padding: 4px 12px; border-radius: 20px;
+        font-size: 12px; font-weight: 700; margin-bottom: 15px;
+    }
+    .risk-Low { background: #d4edda; color: #155724; }
+    .risk-Moderate { background: #fff3cd; color: #856404; }
+    .risk-High { background: #f8d7da; color: #721c24; }
+
+    .btn-invest-now {
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        color: white; border: none; border-radius: 10px;
+        padding: 13px; font-size: 14px; font-weight: 700;
+        width: 100%; cursor: pointer; text-transform: uppercase;
+        letter-spacing: 0.5px; transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(139,0,0,0.3);
+        text-decoration: none; display: block; text-align: center;
+    }
+    .btn-invest-now:hover {
+        transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,0,0,0.4);
         color: white;
-        letter-spacing: 2px;
     }
 
-    .glass-card h3 {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        color: #1a1a1a;
-        text-shadow: none;
+    .empty-state {
+        text-align: center; padding: 80px 20px; color: rgba(255,255,255,0.7);
     }
+    .empty-state span { font-size: 64px; display: block; margin-bottom: 20px; }
 
-    .investment-icon {
-        font-size: 24px;
-        margin-right: 8px;
-    }
-
-    .subtitle {
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 30px;
-    }
-
-    .account-info {
-        background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 30px;
-        font-size: 15px;
-        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
-    }
-
-    .account-info p {
-        color: white;
-        margin: 0;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 8px;
-    }
-
-    .account-info strong {
-        display: block;
-        font-size: 28px;
-        font-weight: 700;
-        margin-top: 5px;
-        letter-spacing: 1px;
-    }
-
-    .balance-label {
-        opacity: 0.9;
-    }
-
-    .form-label {
-        color: #1a1a1a;
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 8px;
-        text-align: left;
-        display: block;
-    }
-
-    .form-group {
-        margin-bottom: 25px;
-        text-align: left;
-    }
-
-    .form-control,
-    select.form-control {
-        background: white;
-        color: #1a1a1a;
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        padding: 14px 16px;
-        font-size: 15px;
-        transition: all 0.3s ease;
-        width: 100%;
-    }
-
-    .form-control:focus,
-    select.form-control:focus {
-        outline: none;
-        border-color: #8B0000;
-        box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
-        background: white;
-    }
-
-    select.form-control {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 16px center;
-        padding-right: 40px;
-        cursor: pointer;
-    }
-
-    .form-control::placeholder {
-        color: #999;
-        opacity: 1;
-    }
-
-    .form-text,
-    small {
-        color: #666;
-        font-size: 12px;
-        margin-top: 5px;
-        display: block;
-    }
-
-    .btn-invest {
-        background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-        border: none;
-        color: white;
-        font-weight: 700;
-        padding: 15px 25px;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        width: 100%;
-        margin-top: 25px;
-        font-size: 16px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        box-shadow: 0 4px 15px rgba(251, 133, 0, 0.3);
-        cursor: pointer;
-    }
-
-    .btn-invest:hover {
-        transform: translateY(-2px);
-        background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%);
-        box-shadow: 0 6px 20px rgba(251, 133, 0, 0.4);
-    }
-
-    .btn-invest:active {
-        transform: translateY(0);
-    }
-
-    .tip-box {
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        border-left: 4px solid #2196f3;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 25px;
-        text-align: left;
-    }
-
-    .tip-box p {
-        font-size: 14px;
-        opacity: 1;
-        color: #1a1a1a;
-        margin: 0;
-        line-height: 1.6;
-    }
-
-    .tip-icon {
-        color: #2196f3;
-        font-size: 18px;
-        margin-right: 5px;
-    }
-
-    .security-note {
-        text-align: center;
-        margin-top: 25px;
-        padding-top: 20px;
-        border-top: 1px solid #e0e0e0;
-    }
-
-    .security-note p {
-        color: #999;
-        font-size: 12px;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-    }
-
-    .lock-icon {
-        font-size: 16px;
-        color: #8B0000;
-    }
-
-    /* Invalid feedback */
-    .invalid-feedback,
-    .error {
-        color: #DC143C;
-        font-size: 13px;
-        margin-top: 5px;
-    }
-
-    /* Responsive design */
-    @media (max-width: 576px) {
-        .glass-card {
-            padding: 40px 30px;
-        }
-
-        .glass-card h3 {
-            font-size: 24px;
-        }
-
-        .brand-logo {
-            width: 120px;
-            height: 50px;
-            font-size: 20px;
-        }
-
-        .account-info strong {
-            font-size: 24px;
-        }
-
-        .investment-wrapper {
-            padding: 40px 15px;
-        }
+    /* Modal */
+    .modal-header { background: linear-gradient(135deg, #8B0000, #DC143C); color: white; border: none; }
+    .modal-header .btn-close { filter: invert(1); }
+    .modal-body { padding: 30px; }
+    .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: #666; font-size: 14px; }
+    .detail-value { font-weight: 700; color: #1a1a1a; }
+    .btn-confirm-invest {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white; border: none; border-radius: 10px;
+        padding: 14px; font-size: 15px; font-weight: 700; width: 100%;
     }
 </style>
 
-<div class="investment-wrapper">
-    <div class="glass-card">
-        <div class="brand-header">
-            <div class="brand-logo">SILENT GUARD</div>
-            <h3><span class="investment-icon">📈</span> Investment Options</h3>
-            <p class="subtitle">Grow your wealth with smart investment choices</p>
+<div class="invest-wrapper">
+    <div class="container">
+
+        <div class="page-header">
+            <h2>📈 Investment Options</h2>
+            <p>Grow your savings with trusted investment products</p>
         </div>
 
-        <div class="account-info">
-            <p class="balance-label">Account Balance:</p>
-            <strong>UGX {{ account.balance|floatformat:0 }}</strong>
+        <!-- Balance bar -->
+        <div class="balance-bar">
+            <div>
+                <div class="label">Available Balance</div>
+                <div class="amount">UGX {{ account.balance|floatformat:0 }}</div>
+            </div>
+            <div style="text-align:right;">
+                <div class="label">Account</div>
+                <div class="account">{{ user.account_number }}</div>
+            </div>
         </div>
 
-        <form method="POST">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-invest">Invest Now</button>
-        </form>
-
-        <div class="tip-box mt-4">
-            <p><span class="tip-icon"></span> <strong>Tip:</strong> Choose your preferred investment plan wisely based on your savings progress and goals.</p>
+        <!-- Category filter pills -->
+        <div class="filter-pills">
+            <button class="filter-pill active" data-cat="all">All</button>
+            <button class="filter-pill" data-cat="Investment">Investment</button>
+            <button class="filter-pill" data-cat="Insurance">Insurance</button>
+            <button class="filter-pill" data-cat="Real Estate">Real Estate</button>
+            <button class="filter-pill" data-cat="Shares">Shares</button>
+            <button class="filter-pill" data-cat="Vehicle Financing">Vehicle Financing</button>
         </div>
 
-        <div class="security-note">
-            <p><span class="lock-icon">🔒</span> Your investments are secure and protected</p>
+        {% if options %}
+        <div class="row g-4" id="investmentGrid">
+            {% for item in options %}
+            <div class="col-md-6 col-lg-4 inv-item" data-cat="{{ item.category }}">
+                <div class="inv-card">
+                    <div class="inv-card-header">
+                        <div class="inv-icon">
+                            {% if item.category == "Real Estate" %}🏠
+                            {% elif item.category == "Shares" %}📊
+                            {% elif item.category == "Insurance" %}🛡️
+                            {% elif item.category == "Vehicle Financing" %}🚗
+                            {% else %}💼{% endif %}
+                        </div>
+                        <h5>{{ item.name }}</h5>
+                        <span class="category-tag">{{ item.category }}</span>
+                    </div>
+
+                    <div class="inv-card-body">
+                        <p>{{ item.description|truncatewords:20 }}</p>
+
+                        <div class="inv-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Return / Year</span>
+                                <span class="stat-value green">{{ item.return_rate }}%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Min. Amount</span>
+                                <span class="stat-value red">{{ item.min_amount|floatformat:0 }}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="risk-badge risk-{{ item.risk_level }}">
+                                {% if item.risk_level == "Low" %}🟢{% elif item.risk_level == "Moderate" %}🟡{% else %}🔴{% endif %}
+                                {{ item.risk_level }} Risk
+                            </span>
+                        </div>
+
+                        {% if account.balance >= item.min_amount %}
+                            <button class="btn-invest-now"
+                                    data-bs-toggle="modal" data-bs-target="#investModal"
+                                    data-name="{{ item.name }}"
+                                    data-min="{{ item.min_amount }}"
+                                    data-return="{{ item.return_rate }}"
+                                    data-risk="{{ item.risk_level }}"
+                                    data-category="{{ item.category }}"
+                                    data-id="{{ item.id }}">
+                                📈 Invest Now
+                            </button>
+                        {% else %}
+                            <button class="btn-invest-now" disabled
+                                    style="background:linear-gradient(135deg,#999,#bbb);cursor:not-allowed;">
+                                💰 Need UGX {{ item.min_amount|floatformat:0 }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <span>📈</span>
+            <h4 style="color:white;">No investment options available yet</h4>
+            <p>Check back soon — new opportunities are added regularly.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- Investment Confirmation Modal -->
+<div class="modal fade" id="investModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:18px;overflow:hidden;border:none;">
+            <div class="modal-header">
+                <h5 class="modal-title">📈 Confirm Investment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalDetails">
+                    <div class="detail-row">
+                        <span class="detail-label">Investment</span>
+                        <span class="detail-value" id="modal-name">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value" id="modal-category">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Minimum Amount</span>
+                        <span class="detail-value" id="modal-min">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Expected Return</span>
+                        <span class="detail-value" style="color:#28a745;" id="modal-return">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Risk Level</span>
+                        <span class="detail-value" id="modal-risk">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Your Balance</span>
+                        <span class="detail-value">UGX {{ account.balance|floatformat:0 }}</span>
+                    </div>
+                </div>
+
+                <div style="background:#fff3cd;border-left:4px solid #ffc107;border-radius:8px;padding:12px 15px;margin:20px 0;font-size:13px;color:#856404;">
+                    ⚠ Investments carry risk. Only invest what you can afford. Returns are not guaranteed.
+                </div>
+
+                <form method="POST" action="{% url 'investment_options' %}" id="investForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="investment_id" id="modal-investment-id">
+                    <button type="submit" class="btn-confirm-invest">✅ Confirm & Invest</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+// Category filter
+document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const cat = this.dataset.cat;
+        document.querySelectorAll('.inv-item').forEach(item => {
+            item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+        });
+    });
+});
+
+// Populate modal
+document.querySelectorAll('.btn-invest-now[data-bs-toggle]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.getElementById('modal-name').textContent = this.dataset.name;
+        document.getElementById('modal-category').textContent = this.dataset.category;
+        document.getElementById('modal-min').textContent = 'UGX ' + parseInt(this.dataset.min).toLocaleString();
+        document.getElementById('modal-return').textContent = this.dataset.return + '% per year';
+        document.getElementById('modal-risk').textContent = this.dataset.risk;
+        document.getElementById('modal-investment-id').value = this.dataset.id;
+    });
+});
+</script>
 {% endblock %}

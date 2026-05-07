@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Account Locked | Silent Guard{% endblock %}
+{% block content %}
+<style>
+    body { background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%); min-height: 100vh; }
+    .lock-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .lock-card {
+        background: white; border-radius: 20px; border: 2px solid #DC143C;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-width: 440px; width: 100%;
+        padding: 50px 40px; text-align: center;
+    }
+    .lock-icon { font-size: 72px; display: block; margin-bottom: 20px; }
+    h3 { color: #8B0000; font-weight: 700; font-size: 26px; margin-bottom: 15px; }
+    p { color: #555; font-size: 15px; line-height: 1.6; }
+    .btn-contact {
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        color: white; border: none; border-radius: 10px;
+        padding: 14px 30px; font-size: 15px; font-weight: 700;
+        text-decoration: none; display: inline-block; margin-top: 25px;
+        transition: all 0.3s;
+    }
+    .btn-contact:hover { transform: translateY(-2px); color: white; }
+</style>
+<div class="lock-wrapper">
+    <div class="lock-card">
+        <span class="lock-icon">🔒</span>
+        <h3>Transactions Locked</h3>
+        <p>Your transaction PIN has been entered incorrectly 3 times. For your security, all transactions have been temporarily locked.</p>
+        <p style="margin-top:15px;">Please contact <strong>SilentGuard Support</strong> or your account administrator to unlock your transactions.</p>
+        <a href="{% url 'submit_feedback' %}" class="btn-contact">📧 Contact Support</a>
+        <br>
+        <a href="{% url 'dashboard' %}" style="color:#8B0000;font-size:14px;display:inline-block;margin-top:20px;">← Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}{{ article.title }} | SilentGuard{% endblock %}
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    body { background: linear-gradient(135deg, #800000 0%, #5a0000 100%); min-height: 100vh; }
+    .detail-wrapper { padding: 40px 0 60px; }
+
+    /* Breadcrumb */
+    .breadcrumb-bar { margin-bottom: 25px; }
+    .breadcrumb-bar a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; }
+    .breadcrumb-bar a:hover { color: white; }
+    .breadcrumb-bar span { color: rgba(255,255,255,0.5); margin: 0 8px; }
+    .breadcrumb-bar .current { color: white; font-size: 14px; }
+
+    /* Article card */
+    .article-card {
+        background: white; border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        overflow: hidden; position: relative;
+    }
+    .article-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+        background: linear-gradient(90deg, #8B0000, #DC143C, #FFD700);
+    }
+
+    .article-header {
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        padding: 40px 45px 35px;
+    }
+    .article-header .cat-badge {
+        display: inline-block; background: rgba(255,255,255,0.2); color: white;
+        padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px;
+    }
+    .article-header h1 { color: white; font-weight: 700; font-size: 1.9rem; margin: 0; line-height: 1.3; }
+    .article-header .meta { color: rgba(255,255,255,0.75); font-size: 13px; margin-top: 12px; }
+    .article-header .meta i { margin-right: 5px; }
+
+    .article-body { padding: 45px; }
+    .article-body h5 {
+        color: #8B0000; font-weight: 700; font-size: 1.1rem;
+        margin: 25px 0 12px; padding-bottom: 8px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    .article-body h5:first-child { margin-top: 0; }
+    .article-body p { color: #444; line-height: 1.8; margin-bottom: 14px; font-size: 0.97rem; }
+    .article-body ul, .article-body ol { color: #444; line-height: 1.9; padding-left: 22px; margin-bottom: 14px; }
+    .article-body li { margin-bottom: 6px; }
+    .article-body table { font-size: 0.9rem; }
+    .article-body strong { color: #1a1a1a; }
+
+    .article-footer {
+        padding: 25px 45px;
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+        display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+    }
+    .btn-back {
+        background: white; color: #8B0000; border: 2px solid #8B0000;
+        border-radius: 10px; padding: 11px 24px; font-weight: 700; font-size: 14px;
+        text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-back:hover { background: #8B0000; color: white; }
+    .btn-report {
+        background: linear-gradient(135deg, #DC143C, #8B0000);
+        color: white; border: none; border-radius: 10px; padding: 11px 24px;
+        font-weight: 700; font-size: 14px; text-decoration: none;
+        transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-report:hover { transform: translateY(-2px); color: white; box-shadow: 0 4px 15px rgba(139,0,0,0.3); }
+
+    /* Related articles */
+    .related-section { margin-top: 40px; }
+    .related-section h4 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1.2rem; }
+    .related-card {
+        background: rgba(255,255,255,0.95); border-radius: 14px;
+        padding: 20px; text-decoration: none; display: block;
+        transition: all 0.3s; border: 2px solid transparent;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .related-card:hover { transform: translateY(-4px); border-color: #FFD700; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    .related-card h6 { color: #8B0000; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+    .related-card p { color: #666; font-size: 0.85rem; margin: 0; line-height: 1.5; }
+    .related-card .arrow { color: #8B0000; font-size: 12px; margin-top: 10px; display: block; font-weight: 700; }
+</style>
+
+<div class="detail-wrapper">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar">
+            <a href="{% url 'learn' %}"><i class="fas fa-graduation-cap"></i> Learn</a>
+            <span>›</span>
+            <span class="current">{{ article.title }}</span>
+        </div>
+
+        <!-- Main article -->
+        <div class="article-card">
+            <div class="article-header">
+                <div class="cat-badge"><i class="fas {{ article.icon }}"></i> {{ article.category }}</div>
+                <h1>{{ article.title }}</h1>
+                <div class="meta">
+                    <i class="fas fa-globe"></i> {{ article.language }}
+                    &nbsp;&nbsp;
+                    <i class="fas fa-calendar"></i> {{ article.created_at|date:"F j, Y" }}
+                </div>
+            </div>
+
+            <div class="article-body">
+                {{ article.content|safe }}
+            </div>
+
+            <div class="article-footer">
+                <a href="{% url 'learn' %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Learn
+                </a>
+                {% if article.category == "Fraud Prevention" %}
+                <a href="{% url 'report_fraud' %}" class="btn-report">
+                    <i class="fas fa-exclamation-triangle"></i> Report Fraud
+                </a>
+                {% else %}
+                <a href="{% url 'set_savings_goal' %}" class="btn-report">
+                    <i class="fas fa-piggy-bank"></i> Set a Savings Goal
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Related articles -->
+        {% if related %}
+        <div class="related-section">
+            <h4>📚 More on {{ article.category }}</h4>
+            <div class="row g-3">
+                {% for r in related %}
+                <div class="col-md-4">
+                    <a href="{% url 'learn_detail' r.pk %}" class="related-card">
+                        <h6><i class="fas {{ r.icon }}"></i> {{ r.title }}</h6>
+                        <p>{{ r.summary|truncatewords:15 }}</p>
+                        <span class="arrow">Read more <i class="fas fa-arrow-right"></i></span>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

@@ -1,16 +1,79 @@
 {% extends 'base.html' %}
+{% block title %}Activity Log | Silent Guard{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <h2>📜 Suspicious Activity Log</h2>
-    {% for log in logs %}
-        <div class="card p-3 shadow-sm mb-3">
-            <p><strong>Event:</strong> {{ log.event_type }}</p>
-            <p><strong>Location:</strong> {{ log.location }}</p>
-            <p><strong>Time:</strong> {{ log.timestamp }}</p>
-            <p><strong>Notes:</strong> {{ log.notes }}</p>
+<style>
+    body {
+        background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%);
+        min-height: 100vh;
+    }
+    .log-wrapper { padding: 40px 0; min-height: 100vh; }
+    .log-card {
+        background: rgba(255,255,255,0.98);
+        border-radius: 20px;
+        border: 2px solid #8B0000;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        overflow: hidden;
+    }
+    .log-header {
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        padding: 25px 30px;
+        color: white;
+    }
+    .log-header h3 { margin: 0; font-weight: 700; font-size: 22px; }
+    .log-item {
+        padding: 20px 30px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.2s;
+    }
+    .log-item:hover { background: #fff5f5; }
+    .log-item:last-child { border-bottom: none; }
+    .event-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .log-meta { color: #666; font-size: 13px; }
+    .log-meta span { margin-right: 20px; }
+    .log-meta i { margin-right: 5px; color: #8B0000; }
+    .empty-state { text-align: center; padding: 60px; color: #999; }
+    .empty-state span { font-size: 48px; display: block; margin-bottom: 15px; }
+</style>
+
+<div class="log-wrapper">
+    <div class="container mt-4">
+        <div class="log-card">
+            <div class="log-header">
+                <h3>📜 Suspicious Activity Log</h3>
+                <p style="margin:5px 0 0;opacity:0.85;font-size:14px;">All security events on your account</p>
+            </div>
+
+            {% if logs %}
+                {% for log in logs %}
+                <div class="log-item">
+                    <div class="event-badge">{{ log.event_type }}</div>
+                    <div class="log-meta">
+                        <span><i class="fas fa-map-marker-alt"></i>{{ log.location|default:"Unknown" }}</span>
+                        <span><i class="fas fa-clock"></i>{{ log.timestamp|date:"Y-m-d H:i:s" }}</span>
+                        {% if log.notes %}
+                        <span><i class="fas fa-sticky-note"></i>{{ log.notes }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <span>✅</span>
+                    <p>No suspicious activity detected. Your account looks clean!</p>
+                </div>
+            {% endif %}
         </div>
-    {% empty %}
-        <p>No suspicious activity found.</p>
-    {% endfor %}
+    </div>
 </div>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 {% endblock %}

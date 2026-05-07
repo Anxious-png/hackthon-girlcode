@@ -39,7 +39,12 @@ urlpatterns = [
 
     path('profile/', views.profile_view, name='profile'),
 
+    path('set-pin/', views.set_pin, name='set_pin'),
+    path('pin-locked/', views.pin_locked, name='pin_locked'),
+    path('unlock-pin/', views.unlock_pin, name='unlock_pin'),
+
     path('learn/', views.learn, name='learn'),
+    path('learn/<int:pk>/', views.learn_detail, name='learn_detail'),
     path('feedback/', views.submit_feedback, name='submit_feedback'),
     path('activity/', views.activity_log, name='activity_log'),
     path('receive-sms/', views.receive_sms, name='receive_sms'),

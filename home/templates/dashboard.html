@@ -291,8 +291,9 @@
             <h4>🔐 Silent Guard</h4>
             <p>Welcome, <strong>{{ user.username }}</strong> 👋</p>
             <p class="text-success">✔ You're Protected</p>
-            <p class="text-warning">⚠ {{ suspicious_count }} suspicious messages</p>
-            <p><strong>Latest Fraudulent SMS:</strong><br>+256 77xxxxxxx</p>
+            <p class="text-warning">⚠ {{ suspicious_count }} scam{{ suspicious_count|pluralize }} detected</p>
+            <p>📨 <strong>{{ messages_count }}</strong> messages scanned</p>
+            <p>🚨 <strong>{{ reports_count }}</strong> fraud report{{ reports_count|pluralize }} submitted</p>
 
             <a href="{% url 'scan_message' %}" class="btn btn-outline-light dashboard-btn w-100 mb-2">🔍 Scan Message</a>
             <a href="{% url 'report_fraud' %}" class="btn btn-outline-danger dashboard-btn w-100 mb-2">🚨 Report Fraud</a>

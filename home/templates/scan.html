@@ -245,8 +245,6 @@
             <button class="btn btn-custom">Scan Now</button>
             {% if msg.id %}
                 <a href="{% url 'scan_result' msg.id %}" class="result-link">See result</a>
-            {% else %}
-                <p class="no-result-text"><b>No result yet.</b></p>
             {% endif %}
         </form>
 

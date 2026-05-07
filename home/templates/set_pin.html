@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Set Transaction PIN | Silent Guard{% endblock %}
+{% block content %}
+<style>
+    body { background: linear-gradient(135deg, #8B0000 0%, #2C0000 100%); min-height: 100vh; }
+    .pin-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .pin-card {
+        background: rgba(255,255,255,0.98);
+        border-radius: 20px;
+        border: 2px solid #8B0000;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        max-width: 440px;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+    .pin-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #8B0000, #DC143C, #8B0000);
+    }
+    .pin-header {
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        padding: 35px 30px;
+        text-align: center;
+    }
+    .pin-header h3 { color: white; font-weight: 700; font-size: 26px; margin: 0; }
+    .pin-header p { color: rgba(255,255,255,0.85); margin: 10px 0 0; font-size: 14px; }
+    .pin-body { padding: 40px 35px; }
+    .pin-dots {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 30px;
+    }
+    .pin-dot {
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        border: 2px solid #8B0000;
+        background: white;
+        transition: background 0.2s;
+    }
+    .pin-dot.filled { background: #8B0000; }
+    .pin-input-field {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 24px;
+        letter-spacing: 12px;
+        text-align: center;
+        color: #8B0000;
+        font-weight: 700;
+        transition: border-color 0.3s;
+        margin-bottom: 20px;
+    }
+    .pin-input-field:focus { outline: none; border-color: #8B0000; box-shadow: 0 0 0 3px rgba(139,0,0,0.1); }
+    label { font-weight: 600; color: #333; font-size: 14px; display: block; margin-bottom: 8px; }
+    .btn-set-pin {
+        background: linear-gradient(135deg, #8B0000, #DC143C);
+        color: white; border: none; border-radius: 10px;
+        padding: 15px; font-size: 16px; font-weight: 700;
+        width: 100%; cursor: pointer; text-transform: uppercase;
+        letter-spacing: 0.5px; transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(139,0,0,0.3);
+    }
+    .btn-set-pin:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,0,0,0.4); }
+    .info-box {
+        background: #fff5f5;
+        border-left: 4px solid #8B0000;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+        font-size: 13px;
+        color: #555;
+    }
+    .info-box ul { margin: 8px 0 0 0; padding-left: 18px; }
+    .info-box li { margin-bottom: 4px; }
+</style>
+
+<div class="pin-wrapper">
+    <div class="pin-card">
+        <div class="pin-header">
+            <h3>🔐 {% if is_change %}Change{% else %}Set Up{% endif %} Transaction PIN</h3>
+            <p>Your PIN authorises all deposits, withdrawals and transfers</p>
+        </div>
+        <div class="pin-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mb-3" style="border-radius:10px;padding:12px 16px;font-size:14px;">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="info-box">
+                <strong>Keep your PIN safe:</strong>
+                <ul>
+                    <li>Never share your PIN with anyone</li>
+                    <li>SilentGuard will never ask for your PIN via SMS</li>
+                    <li>Account locks after 3 wrong attempts</li>
+                </ul>
+            </div>
+
+            <form method="POST" id="pinForm">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="new_pin">New 4-Digit PIN</label>
+                    <div class="pin-dots" id="dots1">
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                    </div>
+                    <input type="password" name="new_pin" id="new_pin" class="pin-input-field"
+                           maxlength="4" inputmode="numeric" autocomplete="off" placeholder="● ● ● ●" required>
+                    {% if form.new_pin.errors %}
+                        <p style="color:#DC143C;font-size:13px;">{{ form.new_pin.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label for="confirm_pin">Confirm PIN</label>
+                    <div class="pin-dots" id="dots2">
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                    </div>
+                    <input type="password" name="confirm_pin" id="confirm_pin" class="pin-input-field"
+                           maxlength="4" inputmode="numeric" autocomplete="off" placeholder="● ● ● ●" required>
+                    {% if form.confirm_pin.errors %}
+                        <p style="color:#DC143C;font-size:13px;">{{ form.confirm_pin.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-set-pin">
+                    🔐 {% if is_change %}Update PIN{% else %}Set PIN{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateDots(inputId, dotsId) {
+    const input = document.getElementById(inputId);
+    const dots = document.querySelectorAll('#' + dotsId + ' .pin-dot');
+    input.addEventListener('input', () => {
+        const len = input.value.length;
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('filled', i < len);
+        });
+        // Only allow digits
+        input.value = input.value.replace(/\D/g, '');
+    });
+}
+updateDots('new_pin', 'dots1');
+updateDots('confirm_pin', 'dots2');
+</script>
+{% endblock %}

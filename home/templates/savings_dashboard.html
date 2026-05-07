@@ -214,14 +214,14 @@
         .amount-display { flex-direction: column; }
     }
 </style>
-     Account No: <strong>{{ user.account_number }}</strong>
+     {% comment %}removed stray account number text{% endcomment %}
 <div class="dashboard-wrapper">
     <div class="container mt-5 text-center">
         <div class="card glass-card shadow-lg p-4">
             <div class="card-header-section">
                 <h3>🏦 Savings Goal Tracker</h3>
                 <div class="account-badge">
-                    Saving  Account No: <strong>7890876545</strong>
+                    Account No: <strong>{{ user.account_number }}</strong>
                 </div>
             </div>
 
@@ -261,6 +261,14 @@
                     <div class="alert alert-info mt-3 shadow-sm">
                          <strong>Smart Insight:</strong> {{ ai_feedback }}
                     </div>
+
+                    <!-- Spending Chart -->
+                    {% if chart_labels %}
+                    <div class="mt-4">
+                        <h6 style="color:#8B0000;font-weight:700;text-align:center;">Spending Breakdown</h6>
+                        <canvas id="spendingChart" height="200"></canvas>
+                    </div>
+                    {% endif %}
                 {% else %}
                     <div class="alert alert-warning mt-3">
                         No savings goal set yet.
@@ -289,7 +297,12 @@
                             <p><strong>Minimum:</strong> UGX {{ item.min_amount }}</p>
                             <p><strong>Risk:</strong> {{ item.risk_level }}</p>
                         </div>
-                        
+                        <div class="card-footer" style="background:transparent;border-top:1px solid #eee;padding:15px;">
+                            <a href="{% url 'investment_options' %}" class="btn btn-sm w-100"
+                               style="background:linear-gradient(135deg,#8B0000,#DC143C);color:white;border:none;border-radius:8px;padding:10px;font-weight:700;">
+                                📈 Invest Now
+                            </a>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -298,4 +311,31 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if chart_labels %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const ctx = document.getElementById('spendingChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [{
+            data: {{ chart_data|safe }},
+            backgroundColor: ['#8B0000','#DC143C','#FF6B6B','#FFB347','#4CAF50','#2196F3'],
+            borderWidth: 2,
+            borderColor: '#fff',
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 } } }
+        }
+    }
+});
+</script>
+{% endif %}
 {% endblock %}

@@ -316,15 +316,26 @@
         <p>
           <span class="badge badge-danger">⚠ Scam Detected</span>
         </p>
+        <p><strong>Risk Level:</strong>
+          <span class="badge badge-{{ risk_color }}" style="font-size:13px;">{{ risk_level }}</span>
+        </p>
         <p><strong>Detected Keywords:</strong> 
           <span class="keywords">{{ msg.detected_keywords|default:"None" }}</span>
         </p>
         <div class="confidence-level">
-          <p><strong>Confidence Level:</strong> {{ msg.confidence_score|default:"N/A" }}%</p>
+          <p><strong>Confidence Score:</strong> {{ msg.confidence_score|floatformat:1 }}%</p>
+          <div style="background:#e9ecef;border-radius:10px;height:12px;overflow:hidden;margin-top:8px;">
+            <div style="width:{{ msg.confidence_score|floatformat:0 }}%;background:linear-gradient(90deg,#8B0000,#DC143C);height:100%;border-radius:10px;"></div>
+          </div>
         </div>
       {% else %}
         <p><span class="badge badge-success">✅ Safe Message</span></p>
-        <p>No suspicious activity detected.</p>
+        <p>No suspicious activity detected. This message appears safe.</p>
+        {% if msg.confidence_score %}
+        <div class="confidence-level">
+          <p><strong>Confidence Score:</strong> {{ msg.confidence_score|floatformat:1 }}% scam probability</p>
+        </div>
+        {% endif %}
       {% endif %}
     </div>
 

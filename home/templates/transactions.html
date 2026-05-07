@@ -288,6 +288,30 @@
             <p class="subtitle">View all your account transactions</p>
         </div>
 
+        <!-- Summary row -->
+        {% if transactions %}
+        <div class="row mb-4 g-3">
+            <div class="col-md-4">
+                <div style="background:#d4edda;border-radius:12px;padding:20px;text-align:center;border-left:4px solid #28a745;">
+                    <p style="color:#155724;font-size:12px;text-transform:uppercase;margin:0 0 5px 0;">Total In</p>
+                    <h4 style="color:#155724;margin:0;font-weight:700;">UGX {{ total_in|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="background:#f8d7da;border-radius:12px;padding:20px;text-align:center;border-left:4px solid #DC143C;">
+                    <p style="color:#721c24;font-size:12px;text-transform:uppercase;margin:0 0 5px 0;">Total Out</p>
+                    <h4 style="color:#721c24;margin:0;font-weight:700;">UGX {{ total_out|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="background:#fff3cd;border-radius:12px;padding:20px;text-align:center;border-left:4px solid #ffc107;">
+                    <p style="color:#856404;font-size:12px;text-transform:uppercase;margin:0 0 5px 0;">Transactions</p>
+                    <h4 style="color:#856404;margin:0;font-weight:700;">{{ transactions|length }}</h4>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="table-container">
             {% if transactions %}
             <table class="table table-striped table-hover shadow-sm rounded">
@@ -303,10 +327,17 @@
                     {% for t in transactions %}
                     <tr>
                         <td>{{ t.timestamp|date:"Y-m-d H:i" }}</td>
-                        <td>{{ t.transaction_type|title }}</td>
-                        <td>{{ t.description }}</td>
-                        <td>{{ t.amount|floatformat:0 }}</td>
-                        
+                        <td>
+                            {% if t.category == "Deposit" %}
+                                <span style="color:#28a745;font-weight:700;">⬆ {{ t.category }}</span>
+                            {% elif t.category == "Withdrawal" %}
+                                <span style="color:#DC143C;font-weight:700;">⬇ {{ t.category }}</span>
+                            {% else %}
+                                <span style="color:#8B0000;font-weight:700;">↔ {{ t.category }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ t.description|default:"—" }}</td>
+                        <td style="font-weight:700;">{{ t.amount|floatformat:0 }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -314,7 +345,7 @@
             {% else %}
             <div class="empty-state">
                 <span class="empty-icon">📊</span>
-                <p>No transactions found. Start using your account to see your transaction history here.</p>
+                <p>No transactions yet. Start using your account to see history here.</p>
             </div>
             {% endif %}
         </div>
